@@ -1,7 +1,21 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
+
+#ifndef _GNUC
+#define __attribute__(x)
+#endif
+
+//From http://stackoverflow.com/a/8712996/591064
+#ifdef _MSC_VER 
+// from Visual Studio 2005 onwards
+// https://msdn.microsoft.com/en-us/library/2ts7cx93%28v=vs.80%29.aspx
+#include <stdio.h>    
+#define snprintf _snprintf
+#endif
 
 // Header (Tag 0x20)
 typedef struct __attribute__((__packed__)) {
@@ -115,7 +129,7 @@ const char* GetActivityType(uint8_t activity) {
 const char* GetGMTTime(uint32_t seconds) {
   time_t tt = seconds;
   static char buffer[128];
-  if (strftime(buffer, sizeof(buffer), "%F %T", gmtime(&tt)) > 0) {
+  if (strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", gmtime(&tt)) > 0) {
     return buffer;
   }
   return "";
@@ -124,7 +138,7 @@ const char* GetGMTTime(uint32_t seconds) {
 const char* GetLocalTime(uint32_t seconds) {
   time_t tt = seconds;
   static char buffer[128];
-  if (strftime(buffer, sizeof(buffer), "%F %T", localtime(&tt)) > 0) {
+  if (strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", localtime(&tt)) > 0) {
     return buffer;
   }
   return "";
